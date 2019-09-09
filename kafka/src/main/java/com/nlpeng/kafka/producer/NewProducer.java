@@ -7,6 +7,8 @@ import org.apache.kafka.clients.producer.ProducerRecord;
 import java.util.Properties;
 
 /**
+ *
+ * NO.1  创建生产者
  * @author Ferry NLP
  * @create 2019-09-07
  * @see
@@ -23,6 +25,7 @@ public class NewProducer {
         // 消息发送最大尝试次数
         props.put("retries", 0);
         // 一批消息处理大小
+
         props.put("batch.size", 16384);
         // 请求延时
         props.put("linger.ms", 1);
@@ -34,8 +37,8 @@ public class NewProducer {
         props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
 
         Producer<String, String> producer = new KafkaProducer<>(props);
-        for (int i = 0; i < 50; i++) {
-            producer.send(new ProducerRecord<String, String>("first", Integer.toString(i), "hello world-" + i));
+        for (int i = 0; i < 5; i++) {
+            producer.send(new ProducerRecord<String, String>("frist", Integer.toString(i), "hello world-" + i));
         }
 
         producer.close();

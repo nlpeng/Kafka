@@ -1,24 +1,21 @@
 package com.nlpeng.kafka.producer;
 
-import org.apache.kafka.clients.producer.Callback;
 import org.apache.kafka.clients.producer.KafkaProducer;
+import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
-import org.apache.kafka.clients.producer.RecordMetadata;
 
 import java.util.Properties;
 
 /**
- * NO.2 创建生产者带回调函数
- * kafka生产者
- *
+ * NO.3 自定义分区生产者
  * @author Ferry NLP
  * @create 2019-09-07
  * @see
  * @since 1.0v
  **/
-public class CallBackProducer {
-
+public class PartitionerProducer {
     public static void main(String[] args) {
+
         Properties props = new Properties();
         // Kafka服务端的主机名和端口号
         props.put("bootstrap.servers", "localhost:9092");
@@ -36,23 +33,14 @@ public class CallBackProducer {
         props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
         // value序列化
         props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
+        // 自定义分区
+        props.put("partitioner.class", "com.nlpeng.kafka.producer.CustomPartitioner");
 
-        KafkaProducer<String, String> kafkaProducer = new KafkaProducer<>(props);
+        Producer<String, String> producer = new KafkaProducer<>(props);
+        producer.send(new ProducerRecord<String, String>("first", "1", "nlpeng"));
 
-        for (int i = 0; i < 5; i++) {
-
-            kafkaProducer.send(new ProducerRecord<String, String>("third", "hello" + i), new Callback() {
-
-                @Override
-                public void onCompletion(RecordMetadata metadata, Exception exception) {
-
-                    if (metadata != null) {
-                        System.err.println(metadata.partition() + "---" + metadata.offset());
-                    }
-                }
-            });
-        }
-
-        kafkaProducer.close();
+        producer.close();
     }
+
+
 }
